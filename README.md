@@ -38,19 +38,13 @@ Siga os passos abaixo para instalar as dependências do projeto:
 
 Para iniciar o servidor de desenvolvimento, siga as instruções abaixo:
 
-1. Certifique-se de estar no diretório do projeto:
-
-   ```bash
-   cd santalucia-blog-frontend
-   ```
-
-2. Inicie o servidor:
+1. Inicie o servidor:
 
    ```bash
    npm run dev
    ```
 
-3. Acesse o projeto no navegador:
+2. Acesse o projeto no navegador:
 
    ```
    http://localhost:5173
