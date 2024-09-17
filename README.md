@@ -19,13 +19,13 @@ Siga os passos abaixo para instalar as dependências do projeto:
 1. Clone o repositório:
 
    ```bash
-   git clone https://github.com/SeuUsuario/santalucia-blog-frontend.git
+   git clone https://github.com/ArthurProjectCorrea/Project-07092024-FrontEnd.git
    ```
 
 2. Acesse o diretório do projeto:
 
    ```bash
-   cd santalucia-blog-frontend
+   cd Project-07092024-FrontEnd
    ```
 
 3. Instale as dependências:
