@@ -3,11 +3,34 @@
 @tailwind utilities;
 
 .buttonShape {
-  @apply font-bold capitalize;
+  @apply font-bold capitalize w-full py-2 px-4 rounded-md;
 }
 .clearButtonStyle {
-  @apply border rounded-md border-black bg-white text-black hover:bg-black hover:border-black hover:text-white py-2 px-4;
+  @apply border  border-black bg-white text-black  ;
+}
+.clearButtonStyle.hover {
+  @apply hover:bg-black hover:border-black hover:text-white;
 }
 .darkButtonStyle {
-  @apply border rounded-md border-white bg-black text-white hover:bg-white hover:text-black hover:border-black py-2 px-4;
+  @apply border-white bg-black text-white ;
 }
+.darkButtonStyle.hover {
+  @apply  hover:bg-white hover:text-black hover:border-black py-2 px-4;
+}
+
+.darkButtonStyle.green {
+  @apply border-green-50 bg-green-600 text-green-50 ;
+}
+
+/* .styleInput {
+  @apply flex justify-start items-center p-2 gap-2 bg-green-50 rounded-md w-full mb-2;
+}
+label.styleInput {
+  @apply  text-green-600 w-auto;
+}
+input.styleInput {
+  @apply text-black outline-none 
+}
+input::placeholder  {
+  @apply text-green-400 
+} */

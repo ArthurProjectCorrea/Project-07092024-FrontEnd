@@ -1,15 +1,26 @@
 <template>
-  <div class="styleMain">
-    <NavBar />
+  <div class="styleApp">
+    <NavBar v-if="!hideNavBar" />
     <RouterView />
   </div>
 </template>
+
 <script setup>
-import { RouterView } from "vue-router";
+import { RouterView, useRoute } from "vue-router";
 import NavBar from "./components/layouts/NavBar.vue";
+import { computed } from 'vue';
+
+// Obtenha a rota atual
+const route = useRoute();
+
+// Esconda a NavBar se a rota for login ou register
+const hideNavBar = computed(() => {
+  return route.path === '/login' || route.path === '/register';
+});
 </script>
+
 <style scoped>
-.styleMain {
-  @apply bg-white
+.styleApp {
+  @apply bg-white w-full h-full
 }
 </style>
