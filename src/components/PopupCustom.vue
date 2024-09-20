@@ -3,7 +3,7 @@
         <div class="styleWindowsPopup" @click.stop>
             <div class="styleHeadPopup">
                 <h1 class="styleTitlePopup">{{ title }}</h1>
-                <button @click="closePopup" class="clearButtonStyle" type="submit">
+                <button @click="closePopup" class="clearButtonHover" type="submit">
                     <font-awesome-icon :icon="['fas', 'xmark']" />
                 </button>
             </div>

@@ -21,6 +21,6 @@ const hideNavBar = computed(() => {
 
 <style scoped>
 .styleApp {
-  @apply bg-white w-full h-full
+  @apply bg-white w-full h-full dark:bg-gray-900 text-gray-950
 }
 </style>

@@ -1,8 +1,8 @@
 <template>
-    <nav class="styleNavBar">
+    <nav :class="['styleNavBar', isDarkMode ? 'dark' : '']">
         <div class="styleLogo">
-            <h1 class="styleLogo">Blog</h1>
-            <h2 class="styleLogo">do Santalucia</h2>
+            <h1 class="styleLogoText">Blog</h1>
+            <h2 class="styleLogoText">do Santalucia</h2>
         </div>
         <div class="styleNavigation">
             <RouterLink to="/" active-class="active">Início</RouterLink>
@@ -11,22 +11,19 @@
             <RouterLink to="/contact" active-class="active">Contato</RouterLink>
         </div>
         <div class="styleButtons">
+            <button @click="toggleDarkMode" class="clearButtonHover buttonShape">
+                <font-awesome-icon :icon="['fas', isDarkMode ? 'sun' : 'moon']" />
+            </button>
             <div v-if="!isAuthenticated" class="styleButtons">
                 <RouterLink to="/login">
-                    <button class="clearButtonStyle buttonShape">
-                        Login
-                    </button>
-                </RouterLink>
-                <RouterLink to="/register">
-                    <button class="darkButtonStyle buttonShape">
-                        Register
+                    <button class="clearButtonHover buttonShape">
+                        <font-awesome-icon :icon="['fas', 'right-to-bracket']" />
                     </button>
                 </RouterLink>
             </div>
             <div v-if="isAuthenticated" class="styleButtons">
-                <button class="clearButtonStyle buttonShape">{{ user.name }}</button>
-                <button @click="logout" class="darkButtonStyle buttonShape">
-                    <font-awesome-icon :icon="['fas', 'right-from-bracket']" />
+                <button @click="logout" class="styleButton buttonShape">
+                    <font-awesome-icon :icon="['fas', 'user']" />
                 </button>
             </div>
         </div>
@@ -36,21 +33,25 @@
 
 <script setup>
 import { RouterLink, useRouter } from 'vue-router'
-import { computed } from 'vue'
+import { computed, ref, onMounted } from 'vue'
 import { useStore } from 'vuex'
 
 const store = useStore()
 const router = useRouter()
 
-const isAuthenticated = computed(() => {
-    console.log('Checking authentication:', store.getters.isAuthenticated)
-    return store.getters.isAuthenticated
-})
+const isAuthenticated = computed(() => store.getters.isAuthenticated)
+const isDarkMode = ref(false);
 
-const user = computed(() => {
-    console.log('Getting user:', store.getters.getUser)
-    return store.getters.getUser
-})
+const toggleDarkMode = () => {
+    isDarkMode.value = !isDarkMode.value;
+    if (isDarkMode.value) {
+        document.documentElement.classList.add('dark');
+        localStorage.setItem('dark-mode', 'enabled');
+    } else {
+        document.documentElement.classList.remove('dark');
+        localStorage.setItem('dark-mode', 'disabled');
+    }
+};
 
 const logout = () => {
     store.dispatch('logout')
@@ -58,34 +59,48 @@ const logout = () => {
     localStorage.removeItem('user')
     router.push('/')
 }
+
+onMounted(() => {
+    if (localStorage.getItem('dark-mode') === 'enabled') {
+        isDarkMode.value = true;
+        document.documentElement.classList.add('dark');
+    } else {
+        isDarkMode.value = false;
+        document.documentElement.classList.remove('dark');
+    }
+});
 </script>
 
 <style scoped>
 .styleNavBar {
     @apply flex justify-between items-center px-10 border-b h-16 bg-slate-50;
+    @apply dark:bg-gray-800 dark:border-gray-700;
+    /* Estilo para modo escuro */
 }
 
 .styleLogo {
-    @apply flex justify-center items-center gap-2 select-none font-suse font-bold text-xl py-2;
+    @apply flex justify-center items-center gap-2 select-none font-bold text-xl py-2;
 }
 
-h1.styleLogo {
-    @apply text-emerald-600;
-}
-
-h2.styleLogo {
-    @apply text-black;
+.styleLogoText {
+    @apply font-suse text-black;
+    @apply dark:text-white;
+    /* Texto em branco no modo escuro */
 }
 
 .styleNavigation {
-    @apply flex justify-between items-center gap-8 text-black  font-semibold h-full capitalize;
+    @apply flex justify-between items-center gap-8 font-semibold h-full capitalize;
+    @apply text-black dark:text-gray-300;
+    /* Texto em cinza claro no modo escuro */
 }
 
 .active {
     @apply border-b-4 border-emerald-600 h-full flex justify-center items-center;
+    @apply dark:border-emerald-400;
+    /* Borda para modo escuro */
 }
 
-div.styleButtons {
+.styleButtons {
     @apply flex justify-center items-center gap-2;
 }
 </style>

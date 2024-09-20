@@ -8,9 +8,33 @@ import store from './store'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faArrowLeft, faEnvelope, faKey, faMagnifyingGlass, faRightFromBracket, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faTwitter } from '@fortawesome/free-brands-svg-icons'
+import {
+  faArrowLeft,
+  faEnvelope,
+  faKey,
+  faMagnifyingGlass,
+  faMoon,
+  faRightFromBracket,
+  faRightToBracket,
+  faSun,
+  faUser,
+  faXmark
+} from '@fortawesome/free-solid-svg-icons'
 
-library.add(faMagnifyingGlass, faRightFromBracket, faXmark, faEnvelope, faKey, faArrowLeft)
+library.add(
+  faMagnifyingGlass,
+  faRightFromBracket,
+  faXmark,
+  faEnvelope,
+  faKey,
+  faArrowLeft,
+  faRightToBracket,
+  faTwitter,
+  faUser,
+  faMoon,
+  faSun
+)
 
 const app = createApp(App)
 

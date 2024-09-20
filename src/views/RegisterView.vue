@@ -2,15 +2,15 @@
     <div class="styleRegisterPage">
         <form @submit.prevent="register" class="styleForm">
             <div class="styleInputContainer">
-                <input v-model="form.name" class="styleInput" placeholder="Name" />
+                <input v-model="form.name" class="styleInput" placeholder="Name" required />
             </div>
             <div class="styleInputContainer">
-                <input v-model="form.email" class="styleInput" type="email" placeholder="Email" />
+                <input v-model="form.email" class="styleInput" type="email" placeholder="Email" required />
             </div>
             <div class="styleInputContainer">
-                <input v-model="form.password" class="styleInput" type="password" placeholder="Password" />
+                <input v-model="form.password" class="styleInput" type="password" placeholder="Password" required />
             </div>
-            <button type="submit" class="styleButton">Register</button>
+            <button type="submit" class="styleButton buttonShape">Register</button>
         </form>
         <RouterLink to="/" class="styleInicioLink">Início</RouterLink>
     </div>
@@ -27,42 +27,40 @@ const router = useRouter();
 const form = ref({
     name: '',
     email: '',
-    password: ''
+    password: '',
+    accessTypeId: 1
 });
 
 const register = async () => {
     try {
         const response = await axios.post('http://localhost:4000/api/users/register', form.value);
-        store.dispatch('login', response.data.user); // Salva o usuário no Vuex
-        router.push({ name: '/' }); // Redireciona após o registro
+        router.push('/'); // Redireciona após o registro
+
+        // Salva o usuário no Vuex, se necessário
+        if (response.data && response.data.user) {
+            store.dispatch('login', response.data.user);
+        }
     } catch (error) {
-        console.error('Error registering:', error.response.data);
+        console.error('Error registering:', error.response?.data || error.message);
+        // Aqui você pode adicionar um tratamento para exibir uma mensagem ao usuário
     }
 };
 </script>
 
 <style scoped>
 .styleRegisterPage {
-    @apply flex flex-col items-center justify-center min-h-screen bg-gray-100;
+    @apply flex flex-col items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-800;
 }
 
 .styleForm {
-    @apply w-full max-w-md bg-white shadow-lg rounded-lg p-8 space-y-6;
+    @apply w-full max-w-md bg-white shadow-lg rounded-lg p-8 space-y-6 dark:bg-gray-900;
 }
 
 .styleInputContainer {
     @apply relative;
 }
 
-.styleInput {
-    @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-600;
-}
-
-.styleButton {
-    @apply w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-600;
-}
-
 .styleInicioLink {
-    @apply text-emerald-600 hover:underline mt-6 text-center;
+    @apply text-emerald-600 hover:underline mt-6 text-center dark:text-emerald-400;
 }
 </style>
