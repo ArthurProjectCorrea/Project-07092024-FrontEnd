@@ -3,27 +3,42 @@
 @tailwind utilities;
 
 .styleLogo {
-  @apply border p-2 bg-gradient-to-br from-green-500 via-green-300 to-green-500 hover:from-green-300 hover:via-green-500 hover:to-green-300 fill-green-700 rounded-xl size-12
+  @apply  p-2 bg-gradient-to-br from-green-500 via-green-300 to-green-500 hover:from-green-300 hover:via-green-500 hover:to-green-300 fill-green-900 rounded-xl size-12;
 }
 
 .styleForm {
-  @apply border grid grid-rows-3 gap-2
+  @apply  flex flex-col gap-2;
 }
 
 .styleInputContainer {
-  @apply border w-full text-left space-y-2
+  @apply  w-full text-left flex flex-col;
 }
 .styleCheckBoxContainer {
-  @apply border w-full space-x-2 flex 
+  @apply  w-full flex;
 }
 
-.styleLabel {
-  @apply border capitalize font-semibold
+.styleLabelInput {
+  @apply  capitalize font-semibold ml-1 mb-1;
+}
+.styleLabelCheckbox {
+  @apply  capitalize font-semibold ml-1 text-sm;
+}
+.styleCheckbox {
+  @apply  accent-green-400 ;
 }
 .styleInput {
-  @apply border p-2 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-green-600
+  @apply border p-2 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400;
+}
+.styleButton {
+  @apply border py-2 px-4 rounded-lg w-full capitalize font-semibold flex gap-2 justify-center items-center;
 }
 
+.styleButtonGreen {
+  @apply  bg-green-300 text-green-600 hover:bg-green-400 focus:border-green-800;
+}
+.styleButtonGray {
+  @apply  bg-gray-700 text-gray-200 hover:bg-gray-600 focus:border-gray-800;
+}
 
 
 
@@ -34,9 +49,7 @@
   @apply bg-transparent border border-emerald-600 text-emerald-600 hover:bg-emerald-600 hover:text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-600;
 }
 
-.styleButton {
-  @apply w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-600;
-}
+
 .buttonShape {
   @apply transition-all duration-300;
 }

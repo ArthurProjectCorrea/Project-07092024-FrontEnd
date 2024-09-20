@@ -28,7 +28,7 @@
             </div>
         </div>
     </nav>
-    <Popup ref="popup" :visible="isPopupVisible" :title="popupTitle" :component="currentComponent" />
+    <!-- <Popup ref="popup" :visible="isPopupVisible" :title="popupTitle" :component="currentComponent" /> -->
 </template>
 
 <script setup>

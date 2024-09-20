@@ -8,7 +8,7 @@ import store from './store'
 
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
-import { faTwitter } from '@fortawesome/free-brands-svg-icons'
+import { faGoogle } from '@fortawesome/free-brands-svg-icons'
 import {
   faArrowLeft,
   faEnvelope,
@@ -19,7 +19,7 @@ import {
   faRightToBracket,
   faSun,
   faUser,
-  faXmark
+  faXmark,
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
@@ -30,7 +30,7 @@ library.add(
   faKey,
   faArrowLeft,
   faRightToBracket,
-  faTwitter,
+  faGoogle,
   faUser,
   faMoon,
   faSun
