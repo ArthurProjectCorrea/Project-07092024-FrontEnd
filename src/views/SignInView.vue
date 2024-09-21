@@ -12,16 +12,16 @@
                 <p class="styleSubtitle">Enter your username and password to continue</p>
             </div>
             <div class="styleFormWrapper">
-                <form class="styleForm" @submit.prevent="handleLogin" action="">
+                <form class="styleForm" @submit.prevent="handleSignin" action="">
                     <div class="styleInputContainer">
-                        <label class="styleLabelInput" for="email">email</label>
-                        <input class="styleInput" v-model="email" type="email" placeholder="Email" required />
+                        <label class="styleLabelInput" for="email">e-mail</label>
+                        <input class="styleInput" v-model="email" type="email" placeholder="E-mail" required />
                     </div>
                     <div class="styleInputContainer">
                         <label class="styleLabelInput" for="">password</label>
                         <input class="styleInput" v-model="password" type="password" placeholder="Password" required>
                     </div>
-                    <div class="styleLoginOptions">
+                    <div class="styleSigninOptions">
                         <div class="styleCheckBoxContainer">
                             <input class="styleCheckbox" type="checkbox" name="" id="">
                             <label class="styleLabelCheckbox" for="">remember me</label>
@@ -34,13 +34,13 @@
                 </form>
                 <ErrorNotification v-if="errorMessage" :message="errorMessage" />
             </div>
-            <div class="styleLoginWith">or login with</div>
-            <div class="styleSocialLogin">
+            <div class="styleSigninWith">or Sign In with</div>
+            <div class="styleSocialSignin">
                 <button class="styleButton" type="button"><font-awesome-icon :icon="['fab', 'google']" />google</button>
             </div>
-            <div class="styleRegisterOption">
+            <div class="styleSignupOption">
                 <p>Don't have an account?</p>
-                <RouterLink class="styleRegisterLink" to="/register">register</RouterLink>
+                <RouterLink class="styleSignupLink" to="/signup">sign up</RouterLink>
             </div>
         </div>
         <div class="styleErrorNotification">
@@ -63,10 +63,10 @@ const email = ref('');
 const password = ref('');
 const errorMessage = ref('');
 
-const handleLogin = async () => {
-    errorMessage.value = ''; // Reseta a mensagem de erro antes do novo login
+const handleSignin = async () => {
+    errorMessage.value = ''; // Reseta a mensagem de erro antes do novo Signin
     try {
-        const response = await axios.post('http://localhost:4000/api/users/login', {
+        const response = await axios.post('http://localhost:4000/api/users/signin', {
             email: email.value,
             password: password.value,
         });
@@ -79,7 +79,7 @@ const handleLogin = async () => {
                 email: response.data.email,
             }));
 
-            store.dispatch('login', {
+            store.dispatch('signin', {
                 _id: response.data._id,
                 name: response.data.name,
                 email: response.data.email,
@@ -91,7 +91,7 @@ const handleLogin = async () => {
         }
     } catch (error) {
         console.error('Error logging in:', error);
-        errorMessage.value = error.response?.data?.message || 'Erro ao fazer login. Tente novamente.'; // Define a mensagem de erro
+        errorMessage.value = error.response?.data?.message || 'Erro ao fazer Signin. Tente novamente.'; // Define a mensagem de erro
     }
 };
 </script>
@@ -125,7 +125,7 @@ const handleLogin = async () => {
     @apply text-center w-1/2;
 }
 
-.styleLoginOptions {
+.styleSigninOptions {
     @apply flex justify-between items-center w-full;
 }
 
@@ -137,15 +137,19 @@ const handleLogin = async () => {
     @apply w-full;
 }
 
-.styleSocialLogin {
+.styleSigninWith {
+    @apply text-gray-400 text-sm
+}
+
+.styleSocialSignin {
     @apply w-1/2 flex gap-2;
 }
 
-.styleRegisterOption {
+.styleSignupOption {
     @apply w-1/2 flex justify-center items-center gap-2 text-gray-400;
 }
 
-.styleRegisterLink {
+.styleSignupLink {
     @apply capitalize underline text-blue-600;
 }
 

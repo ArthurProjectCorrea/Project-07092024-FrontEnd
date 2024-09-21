@@ -13,9 +13,9 @@ import { computed } from 'vue';
 // Obtenha a rota atual
 const route = useRoute();
 
-// Esconda a NavBar se a rota for login ou register
+// Esconda a NavBar se a rota for signin ou signup
 const hideNavBar = computed(() => {
-  return route.path === '/login' || route.path === '/register';
+  return route.path === '/signin' || route.path === '/signup';
 });
 </script>
 

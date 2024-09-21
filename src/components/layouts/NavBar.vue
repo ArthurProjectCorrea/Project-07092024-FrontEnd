@@ -15,7 +15,7 @@
                 <font-awesome-icon :icon="['fas', isDarkMode ? 'sun' : 'moon']" />
             </button>
             <div v-if="!isAuthenticated" class="styleButtons">
-                <RouterLink to="/login">
+                <RouterLink to="/signin">
                     <button class="clearButtonHover buttonShape">
                         <font-awesome-icon :icon="['fas', 'right-to-bracket']" />
                     </button>
