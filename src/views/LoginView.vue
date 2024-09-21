@@ -44,7 +44,7 @@
             </div>
         </div>
         <div class="styleErrorNotification">
-            
+
         </div>
     </div>
 </template>
@@ -98,7 +98,7 @@ const handleLogin = async () => {
 
 <style scoped>
 .styleContainer {
-    @apply grid grid-cols-2 justify-center items-center  p-2 gap-2 bg-gray-200;
+    @apply grid grid-cols-2 justify-center items-center h-screen p-2 gap-2 bg-gray-200;
 }
 
 .styleContentWrapper {
