@@ -38,13 +38,10 @@
             <div class="styleSocialSignin">
                 <button class="styleButton" type="button"><font-awesome-icon :icon="['fab', 'google']" />google</button>
             </div>
-            <div class="styleSignupOption">
+            <div class="styleSigninOption">
                 <p>Don't have an account?</p>
-                <RouterLink class="styleSignupLink" to="/signup">sign up</RouterLink>
+                <RouterLink class="styleSigninLink" to="/signup">sign up</RouterLink>
             </div>
-        </div>
-        <div class="styleErrorNotification">
-
         </div>
     </div>
 </template>
@@ -90,7 +87,7 @@ const handleSignin = async () => {
             console.error('Unexpected response format:', response.data);
         }
     } catch (error) {
-        console.error('Error logging in:', error);
+        console.error('Error signining in:', error);
         errorMessage.value = error.response?.data?.message || 'Erro ao fazer Signin. Tente novamente.'; // Define a mensagem de erro
     }
 };
@@ -98,31 +95,31 @@ const handleSignin = async () => {
 
 <style scoped>
 .styleContainer {
-    @apply grid grid-cols-2 justify-center items-center h-screen p-2 gap-2 bg-gray-200;
+    @apply flex justify-center items-center xl:h-screen p-4 bg-gray-200 xl:overflow-hidden;
 }
 
 .styleContentWrapper {
-    @apply flex flex-col justify-center items-center container h-full bg-white rounded-lg gap-2;
+    @apply flex flex-col justify-center items-center w-full max-w-md bg-white rounded-lg shadow-lg gap-2 p-6 md:max-w-lg lg:max-w-xl;
 }
 
 .styleLogoContainer {
-    @apply flex justify-center items-center w-1/2;
+    @apply flex justify-center items-center w-16 md:w-24;
 }
 
 .styleWelcomeText {
-    @apply text-center flex flex-col justify-center items-center w-1/2;
+    @apply text-center;
 }
 
 .styleTitle {
-    @apply text-xl font-semibold capitalize;
+    @apply text-xl font-semibold capitalize md:text-2xl;
 }
 
 .styleSubtitle {
-    @apply text-sm normal-case text-gray-400;
+    @apply text-sm text-gray-500 md:text-base;
 }
 
 .styleFormWrapper {
-    @apply text-center w-1/2;
+    @apply w-full;
 }
 
 .styleSigninOptions {
@@ -138,22 +135,18 @@ const handleSignin = async () => {
 }
 
 .styleSigninWith {
-    @apply text-gray-400 text-sm
+    @apply text-gray-500 text-sm;
 }
 
 .styleSocialSignin {
-    @apply w-1/2 flex gap-2;
+    @apply flex justify-center gap-4;
 }
 
-.styleSignupOption {
-    @apply w-1/2 flex justify-center items-center gap-2 text-gray-400;
+.styleSigninOption {
+    @apply flex justify-center items-center gap-2 text-gray-500;
 }
 
-.styleSignupLink {
-    @apply capitalize underline text-blue-600;
-}
-
-.styleErrorNotification {
-    @apply flex w-full p-2 h-full justify-center items-center
+.styleSigninLink {
+    @apply text-blue-600 font-medium;
 }
 </style>

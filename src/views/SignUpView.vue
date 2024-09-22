@@ -8,8 +8,8 @@
                 </svg>
             </div>
             <div class="styleWelcomeText">
-                <h1 class="styleTitle">welcome back to santalucia's blog</h1>
-                <p class="styleSubtitle">Enter your username and password to continue</p>
+                <h1 class="styleTitle">welcome to santalucia's blog</h1>
+                <p class="styleSubtitle">Enter your name, email and password to continue.</p>
             </div>
             <div class="styleFormWrapper">
                 <form class="styleForm" @submit.prevent="handleSignup" action="">
@@ -18,15 +18,21 @@
                         <input v-model="form.name" class="styleInput" placeholder="Name" required />
                     </div>
                     <div class="styleInputContainer">
-                        <label class="styleLabelInput" for="email">email</label>
-                        <input class="styleInput" v-model="form.email" type="email" placeholder="Email" required />
+                        <label class="styleLabelInput" for="email">e-mail</label>
+                        <input class="styleInput" v-model="form.email" type="email" placeholder="E-mail" required />
                     </div>
                     <div class="styleInputContainer">
                         <label class="styleLabelInput" for="password">password</label>
-                        <input class="styleInput" v-model="form.password" type="password" placeholder="Password" required>
+                        <input class="styleInput" v-model="form.password" type="password" placeholder="Password"
+                            required>
+                    </div>
+                    <div class="styleInputContainer">
+                        <label class="styleLabelInput" for="confirmPassword">confirm password</label>
+                        <input class="styleInput" v-model="form.confirmPassword" type="password"
+                            placeholder="Confirm Password" required />
                     </div>
                     <div class="styleSubmitButton">
-                        <button class="styleButton styleButtonGray" type="submit">sign un</button>
+                        <button class="styleButton styleButtonGray" type="submit">sign up</button>
                     </div>
                 </form>
                 <ErrorNotification v-if="errorMessage" :message="errorMessage" />
@@ -36,90 +42,93 @@
                 <button class="styleButton" type="button"><font-awesome-icon :icon="['fab', 'google']" />google</button>
             </div>
             <div class="styleSignupOption">
-                <p>Don't have an account?</p>
+                <p>Already have an account?</p>
                 <RouterLink class="styleSignupLink" to="/signin">sign in</RouterLink>
             </div>
         </div>
-        <div class="styleErrorNotification">
-
-        </div>
     </div>
-
-    <!-- <div class="styleSignupPage">
-        <form @submit.prevent="Signup" class="styleForm">
-            <div class="styleInputContainer">
-                <input v-model="form.name" class="styleInput" placeholder="Name" required />
-            </div>
-            <div class="styleInputContainer">
-                <input v-model="form.email" class="styleInput" type="email" placeholder="Email" required />
-            </div>
-            <div class="styleInputContainer">
-                <input v-model="form.password" class="styleInput" type="password" placeholder="Password" required />
-            </div>
-            <button type="submit" class="styleButton buttonShape">Signup</button>
-        </form>
-        <RouterLink to="/" class="styleInicioLink">Início</RouterLink>
-    </div> -->
 </template>
 
 <script setup>
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
 import { useStore } from 'vuex';
 
 const store = useStore();
 const router = useRouter();
+const errorMessage = ref('');
 const form = ref({
     name: '',
     email: '',
     password: '',
+    confirmPassword: '',
     accessTypeId: 1
 });
 
+// Verifica se as senhas não coincidem
+const passwordMismatch = computed(() => form.value.password !== form.value.confirmPassword);
+
+// Lida com o registro
 const handleSignup = async () => {
+    // Verifica se as senhas coincidem
+    if (passwordMismatch.value) {
+        errorMessage.value = 'Passwords do not match';
+        return;
+    }
+
+    // Verifica se o email é um Gmail
+    const isGmail = /^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(form.value.email);
+    if (!isGmail) {
+        errorMessage.value = 'Please use a valid Gmail address.';
+        return;
+    }
+
     try {
         const response = await axios.post('http://localhost:4000/api/users/signup', form.value);
-        router.push('/'); // Redireciona após o registro
 
-        // Salva o usuário no Vuex, se necessário
+        // Redireciona para a página inicial após o registro bem-sucedido
+        router.push('/');
+
+        // Se necessário, salva o usuário no Vuex
         if (response.data && response.data.user) {
             store.dispatch('signup', response.data.user);
         }
+
     } catch (error) {
-        console.error('Error signuping:', error.response?.data || error.message);
-        // Aqui você pode adicionar um tratamento para exibir uma mensagem ao usuário
+        // Exibe a mensagem de erro retornada pela API
+        errorMessage.value = error.response?.data?.message || 'An error occurred during signup';
     }
 };
 </script>
 
 <style scoped>
 .styleContainer {
-    @apply grid grid-cols-2 justify-center items-center h-screen p-2 gap-2 bg-gray-200;
+    @apply flex justify-center items-center 2xl:h-screen p-4 bg-gray-200 2xl:overflow-hidden;
 }
 
 .styleContentWrapper {
-    @apply flex flex-col justify-center items-center container h-full bg-white rounded-lg gap-2;
+    @apply flex flex-col justify-center items-center w-full max-w-md bg-white rounded-lg shadow-lg gap-2 p-6 md:max-w-lg lg:max-w-xl;
 }
 
 .styleLogoContainer {
-    @apply flex justify-center items-center w-1/2;
+    @apply flex justify-center items-center w-16 md:w-24;
 }
 
 .styleWelcomeText {
-    @apply text-center flex flex-col justify-center items-center w-1/2;
+    @apply text-center;
 }
 
 .styleTitle {
-    @apply text-xl font-semibold capitalize;
+    @apply text-xl font-semibold capitalize md:text-2xl;
 }
 
 .styleSubtitle {
-    @apply text-sm normal-case text-gray-400;
+    @apply text-sm text-gray-500 md:text-base;
 }
 
 .styleFormWrapper {
-    @apply text-center w-1/2;
+    @apply w-full;
 }
 
 .styleSubmitButton {
@@ -127,22 +136,18 @@ const handleSignup = async () => {
 }
 
 .styleSignupWith {
-    @apply text-gray-400 text-sm
+    @apply text-gray-500 text-sm;
 }
 
 .styleSocialSignup {
-    @apply w-1/2 flex gap-2;
+    @apply flex justify-center gap-4;
 }
 
 .styleSignupOption {
-    @apply w-1/2 flex justify-center items-center gap-2 text-gray-400;
+    @apply flex justify-center items-center gap-2 text-gray-500;
 }
 
 .styleSignupLink {
-    @apply capitalize underline text-blue-600;
-}
-
-.styleErrorNotification {
-    @apply flex w-full p-2 h-full justify-center items-center
+    @apply text-blue-600 font-medium;
 }
 </style>

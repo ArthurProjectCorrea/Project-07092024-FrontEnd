@@ -3,82 +3,35 @@
 @tailwind utilities;
 
 .styleLogo {
-  @apply  p-2 bg-gradient-to-br from-green-500 via-green-300 to-green-500 hover:from-green-300 hover:via-green-500 hover:to-green-300 fill-green-900 rounded-xl size-12;
+  @apply p-2 bg-gradient-to-br from-lime-500 via-green-500 to-emerald-500 hover:from-orange-500 hover:via-amber-500 hover:to-yellow-500 fill-gray-900 rounded-lg size-10;
 }
-
 .styleForm {
-  @apply  flex flex-col gap-2;
+  @apply flex flex-col gap-2;
 }
-
 .styleInputContainer {
-  @apply  w-full text-left flex flex-col;
+  @apply w-full text-left flex flex-col;
 }
 .styleCheckBoxContainer {
-  @apply  w-full flex;
+  @apply w-full flex;
 }
-
 .styleLabelInput {
-  @apply  capitalize font-semibold ml-1 mb-1;
+  @apply capitalize font-semibold ml-1 mb-1 text-gray-700;
 }
 .styleLabelCheckbox {
-  @apply  capitalize font-semibold ml-1 text-sm;
+  @apply capitalize font-semibold ml-1 text-sm text-gray-700;
 }
 .styleCheckbox {
-  @apply  accent-green-400 ;
+  @apply accent-green-400;
 }
 .styleInput {
-  @apply border p-2 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400;
+  @apply border p-2 w-full rounded-lg focus:outline-none focus:ring-2 focus:ring-green-400 ;
 }
 .styleButton {
-  @apply border py-2 px-4 rounded-lg w-full capitalize font-semibold flex gap-2 justify-center items-center;
+  @apply border border-gray-700 py-2 px-4 rounded-lg w-full capitalize font-semibold flex gap-2 justify-center items-center;
 }
-
 .styleButtonGreen {
-  @apply  bg-green-300 text-green-600 hover:bg-green-400 focus:border-green-800;
+  @apply bg-green-300 text-green-600 hover:bg-green-400 focus:border-green-800;
 }
 .styleButtonGray {
-  @apply  bg-gray-700 text-gray-200 hover:bg-gray-600 focus:border-gray-800;
-}
-
-
-
-
-
-
-.clearButtonHover {
-  @apply bg-transparent border border-emerald-600 text-emerald-600 hover:bg-emerald-600 hover:text-white font-bold py-2 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-600;
-}
-
-
-.buttonShape {
-  @apply transition-all duration-300;
-}
-
-.styleLink {
-  @apply text-emerald-600 hover:underline;
-}
-
-.asd21 {
-  @apply w-full px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-emerald-600;
-}
-
-/* Estilos para o modo escuro */
-.clearButtonHover.dark {
-  @apply bg-transparent border border-emerald-400 text-emerald-400 hover:bg-emerald-400 hover:text-white; /* Altera cores no modo escuro */
-}
-
-.styleButton.dark {
-  @apply bg-emerald-500 hover:bg-emerald-600 text-white; /* Ajuste para o modo escuro */
-}
-
-.styleButton.dark {
-  @apply bg-emerald-500 hover:bg-emerald-600; /* Ajuste para o modo escuro */
-}
-
-.styleLink.dark {
-  @apply text-emerald-400; /* Ajuste para o modo escuro */
-}
-
-.asd23 {
-  @apply border-gray-600 focus:ring-emerald-400; /* Ajuste para o modo escuro */
+  @apply bg-gray-700 text-gray-200 hover:bg-gray-600 focus:border-gray-800;
 }
