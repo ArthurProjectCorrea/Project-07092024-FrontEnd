@@ -50,54 +50,55 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue';
-import axios from 'axios';
+import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useStore } from 'vuex';
+import axios from 'axios';
+import ErrorNotification from '@/components/popup/ErrorNotification.vue';
 
-const store = useStore();
 const router = useRouter();
-const errorMessage = ref('');
-const form = ref({
+
+// Formulário reativo
+const form = reactive({
     name: '',
     email: '',
     password: '',
     confirmPassword: '',
-    accessTypeId: 1
 });
 
-// Verifica se as senhas não coincidem
-const passwordMismatch = computed(() => form.value.password !== form.value.confirmPassword);
+// Mensagem de erro
+const errorMessage = ref('');
 
-// Lida com o registro
+// Função para verificar se as senhas coincidem
+const passwordsMatch = () => {
+    return form.password === form.confirmPassword;
+};
+
+// Função para lidar com o envio do formulário
 const handleSignup = async () => {
-    // Verifica se as senhas coincidem
-    if (passwordMismatch.value) {
-        errorMessage.value = 'Passwords do not match';
-        return;
-    }
-
-    // Verifica se o email é um Gmail
-    const isGmail = /^[a-zA-Z0-9._%+-]+@gmail\.com$/.test(form.value.email);
-    if (!isGmail) {
-        errorMessage.value = 'Please use a valid Gmail address.';
+    if (!passwordsMatch()) {
+        errorMessage.value = 'Passwords do not match.';
         return;
     }
 
     try {
-        const response = await axios.post('http://localhost:4000/api/users/signup', form.value);
+        // Requisição de signup para o backend
+        const response = await axios.post('http://localhost:4000/api/users/signup', {
+            name: form.name,
+            email: form.email,
+            password: form.password,
+        });
 
-        // Redireciona para a página inicial após o registro bem-sucedido
-        router.push('/');
-
-        // Se necessário, salva o usuário no Vuex
-        if (response.data && response.data.user) {
-            store.dispatch('signup', response.data.user);
+        // Caso o registro seja bem-sucedido, redireciona para a página de login
+        if (response.status === 201) {
+            router.push('/');
         }
-
     } catch (error) {
-        // Exibe a mensagem de erro retornada pela API
-        errorMessage.value = error.response?.data?.message || 'An error occurred during signup';
+        console.error('Erro no cadastro:', error);
+        if (error.response && error.response.data) {
+            errorMessage.value = error.response.data.error || 'Signup failed.';
+        } else {
+            errorMessage.value = 'Signup failed.';
+        }
     }
 };
 </script>

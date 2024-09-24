@@ -51,7 +51,7 @@ import { ref } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
-import ErrorNotification from '@/components/notification/ErrorNotification.vue';
+import ErrorNotification from '@/components/popup/ErrorNotification.vue';
 
 const store = useStore();
 const router = useRouter();
