@@ -11,6 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/vue-fontawesome'
 import { faGoogle } from '@fortawesome/free-brands-svg-icons'
 import {
   faArrowLeft,
+  faArrowsRotate,
   faEnvelope,
   faKey,
   faMagnifyingGlass,
@@ -19,7 +20,7 @@ import {
   faRightToBracket,
   faSun,
   faUser,
-  faXmark,
+  faXmark
 } from '@fortawesome/free-solid-svg-icons'
 
 library.add(
@@ -33,15 +34,21 @@ library.add(
   faGoogle,
   faUser,
   faMoon,
-  faSun
+  faSun,
+  faArrowsRotate
 )
 
 const app = createApp(App)
 
-app.component('font-awesome-icon', FontAwesomeIcon)
-app.use(router)
-app.use(store)
+store
+  .dispatch('initialize')
+  .then(() => {
+    app.component('font-awesome-icon', FontAwesomeIcon)
+    app.use(router)
+    app.use(store)
 
-store.dispatch('initialize').then(() => {
-  app.mount('#app')
-})
+    app.mount('#app')
+  })
+  .catch((err) => {
+    console.error('Error initializing store:', err)
+  })

@@ -15,18 +15,15 @@
             <RouterLink to="/contact" active-class="active">Contato</RouterLink>
         </div>
         <div class="styleButtons">
-            <button @click="toggleDarkMode" class="clearButtonHover buttonShape">
-                <font-awesome-icon :icon="['fas', isDarkMode ? 'sun' : 'moon']" />
-            </button>
-            <div v-if="!isAuthenticated" class="styleButtons">
+            <div v-if="!isLoggedIn" class="styleButtons">
                 <RouterLink to="/signin">
-                    <button class="clearButtonHover buttonShape">
+                    <button class="styleButton">
                         <font-awesome-icon :icon="['fas', 'right-to-bracket']" />
                     </button>
                 </RouterLink>
             </div>
-            <div v-if="isAuthenticated" class="styleButtons">
-                <button @click="logout" class="styleButton buttonShape">
+            <div v-if="isLoggedIn" class="styleButtons">
+                <button @click="logout" class="styleButton">
                     <font-awesome-icon :icon="['fas', 'user']" />
                 </button>
             </div>
@@ -36,55 +33,34 @@
 
 <script setup>
 import { RouterLink, useRouter } from 'vue-router'
-import { computed, ref, onMounted } from 'vue'
+import { computed } from 'vue'
 import { useStore } from 'vuex'
 
 const store = useStore()
 const router = useRouter()
 
-const isAuthenticated = computed(() => store.getters.isAuthenticated)
-const isDarkMode = ref(false);
-
-const toggleDarkMode = () => {
-    isDarkMode.value = !isDarkMode.value;
-    if (isDarkMode.value) {
-        document.documentElement.classList.add('dark');
-        localStorage.setItem('dark-mode', 'enabled');
-    } else {
-        document.documentElement.classList.remove('dark');
-        localStorage.setItem('dark-mode', 'disabled');
-    }
-};
+const isLoggedIn = computed(() => store.state.isLoggedIn)
 
 const logout = () => {
-    store.dispatch('logout')
+    store.dispatch('signout')
     localStorage.removeItem('token')
     localStorage.removeItem('user')
     router.push('/')
 }
 
-onMounted(() => {
-    if (localStorage.getItem('dark-mode') === 'enabled') {
-        isDarkMode.value = true;
-        document.documentElement.classList.add('dark');
-    } else {
-        isDarkMode.value = false;
-        document.documentElement.classList.remove('dark');
-    }
-});
 </script>
 
 <style scoped>
 .style00 {
-    @apply flex justify-between items-center px-6 p-2 border-b max-h-16 ;
+    @apply flex justify-between items-center px-6 p-2 border-b max-h-16;
 }
 
 .style01 {
-    @apply flex justify-center items-center gap-2  py-2;
+    @apply flex justify-center items-center gap-2 py-2;
 }
 
 .style01-01 {
-    @apply select-none font-semibold font-ubuntu text-xl ;
+    @apply select-none font-semibold font-ubuntu text-xl;
 }
 
 .styleNavigation {
@@ -94,7 +70,6 @@ onMounted(() => {
 .active {
     @apply border-b-4 border-emerald-600 h-full flex justify-center items-center;
     @apply dark:border-emerald-400;
-    /* Borda para modo escuro */
 }
 
 .styleButtons {

@@ -14,14 +14,10 @@
             <div class="styleFormWrapper">
                 <form class="styleForm" @submit.prevent="handleSignup">
                     <div class="styleInputContainer">
-                        <label class="styleLabelInput" for="name">Name</label>
-                        <input v-model="form.name" class="styleInput" placeholder="Name" required />
-                    </div>
-                    <div class="styleInputContainer">
                         <label class="styleLabelInput" for="email">E-mail</label>
                         <input v-model="form.email" class="styleInput" type="email" placeholder="E-mail" required />
                     </div>
-                    <div class="styleInputContainer">
+                    <!-- <div class="styleInputContainer">
                         <label class="styleLabelInput" for="password">Password</label>
                         <input v-model="form.password" class="styleInput" type="password" placeholder="Password"
                             required />
@@ -30,7 +26,7 @@
                         <label class="styleLabelInput" for="confirmPassword">Confirm Password</label>
                         <input v-model="form.confirmPassword" class="styleInput" type="password"
                             placeholder="Confirm Password" required />
-                    </div>
+                    </div> -->
                     <div class="styleSubmitButton">
                         <button class="styleButton styleButtonGray" type="submit">
                             <div v-if="!loading">Sign Up</div>
@@ -42,10 +38,10 @@
                 </form>
                 <ErrorNotification v-if="errorMessage" :message="errorMessage" />
             </div>
-            <div class="styleSignupOption">
+            <!-- <div class="styleSignupOption">
                 <p>Already have an account?</p>
                 <RouterLink class="styleSignupLink" to="/signin">Sign In</RouterLink>
-            </div>
+            </div> -->
         </div>
     </div>
 </template>

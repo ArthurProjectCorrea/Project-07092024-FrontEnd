@@ -23,20 +23,21 @@
                     </div>
                     <div class="styleSigninOptions">
                         <div class="styleCheckBoxContainer">
-                            <input class="styleCheckbox" type="checkbox" name="" id="">
-                            <label class="styleLabelCheckbox" for="">remember me</label>
+                            <input 
+                                class="styleCheckbox" 
+                                type="checkbox" 
+                                id="rememberMe" 
+                                v-model="rememberMe"
+                            >
+                            <label class="styleLabelCheckbox" for="rememberMe">remember me</label>
                         </div>
-                        <RouterLink class="styleForgotPassword" to="/">forgot password</RouterLink>
+                        <RouterLink class="styleForgotPassword" to="/forgotpassword">forgot password</RouterLink>
                     </div>
                     <div class="styleSubmitButton">
                         <button class="styleButton styleButtonGray" type="submit">sign in</button>
                     </div>
                 </form>
                 <ErrorNotification v-if="errorMessage" :message="errorMessage" />
-            </div>
-            <div class="styleSigninWith">or Sign In with</div>
-            <div class="styleSocialSignin">
-                <button class="styleButton" type="button"><font-awesome-icon :icon="['fab', 'google']" />google</button>
             </div>
             <div class="styleSigninOption">
                 <p>Don't have an account?</p>
@@ -58,48 +59,76 @@ const router = useRouter();
 
 const email = ref('');
 const password = ref('');
+const rememberMe = ref(false);
 const errorMessage = ref('');
+
+// Recupera as informações de login salvas ao carregar o componente
+const loadSavedCredentials = () => {
+    const savedUser = localStorage.getItem('user');
+    const savedToken = localStorage.getItem('token');
+    if (savedUser && savedToken) {
+        const user = JSON.parse(savedUser);
+        email.value = user.email; // Preenche o campo de e-mail
+        password.value = ''; // Não preenche a senha por segurança
+        rememberMe.value = true; // Marca o checkbox de "Lembrar-me"
+    }
+};
+
+// Chama a função ao montar o componente
+loadSavedCredentials();
 
 const handleSignin = async () => {
     errorMessage.value = ''; // Reseta a mensagem de erro antes do novo Signin
     try {
-        const response = await axios.post('http://localhost:4000/api/users/signin', {
+        const response = await axios.post('http://localhost:4000/api/users/login', {
             email: email.value,
             password: password.value,
         });
 
-        if (response.data && response.data._id && response.data.token) {
-            localStorage.setItem('token', response.data.token);
-            localStorage.setItem('user', JSON.stringify({
-                _id: response.data._id,
-                name: response.data.name,
-                email: response.data.email,
-            }));
+        // Ajuste aqui: utilize a estrutura correta da resposta
+        if (response.data && response.data.user && response.data.user.id) {
+            if (rememberMe.value) {
+                localStorage.setItem('token', response.data.token); // Armazena no localStorage
+                localStorage.setItem('user', JSON.stringify({
+                    _id: response.data.user.id, // Acessando o id corretamente
+                    name: response.data.user.name,
+                    email: response.data.user.email,
+                }));
+            } else {
+                sessionStorage.setItem('token', response.data.token); // Armazena no sessionStorage
+                sessionStorage.setItem('user', JSON.stringify({
+                    _id: response.data.user.id, // Acessando o id corretamente
+                    name: response.data.user.name,
+                    email: response.data.user.email,
+                }));
+            }
 
+            // Despachando a ação do Vuex
             store.dispatch('signin', {
-                _id: response.data._id,
-                name: response.data.name,
-                email: response.data.email,
+                _id: response.data.user.id,
+                name: response.data.user.name,
+                email: response.data.user.email,
             });
 
-            router.push('/');
+            router.push('/'); // Redirecionando após o login
         } else {
-            console.error('Unexpected response format:', response.data);
+            console.error('Formato de resposta inesperado:', response.data);
         }
     } catch (error) {
-        console.error('Error signining in:', error);
-        errorMessage.value = error.response?.data?.message || 'Erro ao fazer Signin. Tente novamente.'; // Define a mensagem de erro
+        console.error('Erro ao fazer login:', error);
+        errorMessage.value = error.response?.data?.message || 'Erro ao fazer Signin. Tente novamente.';
     }
 };
+
 </script>
 
 <style scoped>
 .styleContainer {
-    @apply flex justify-center items-center xl:h-screen p-4 bg-gray-200 xl:overflow-hidden;
+    @apply flex justify-center items-center h-screen md:p-4 bg-gray-200;
 }
 
 .styleContentWrapper {
-    @apply flex flex-col justify-center items-center w-full max-w-md bg-white rounded-lg shadow-lg gap-2 p-6 md:max-w-lg lg:max-w-xl;
+    @apply flex flex-col justify-normal items-center h-full w-full max-w-md bg-white rounded-lg shadow-lg gap-2 p-6 md:max-w-lg lg:max-w-xl;
 }
 
 .styleLogoContainer {

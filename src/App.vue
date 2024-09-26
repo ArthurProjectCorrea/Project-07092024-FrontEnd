@@ -15,7 +15,7 @@ const route = useRoute();
 
 // Esconda a NavBar se a rota for signin ou signup
 const hideNavBar = computed(() => {
-  return route.path === '/signin' || route.path === '/signup';
+  return route.path === '/signin' || route.path === '/signup' || route.path === '/forgotpassword';
 });
 </script>
 

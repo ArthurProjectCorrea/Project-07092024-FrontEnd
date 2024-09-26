@@ -1,26 +1,27 @@
+// store/index.js
 import { createStore } from 'vuex'
 
 export default createStore({
   state: {
-    user: null
+    user: null,
+    isLoggedIn: false
   },
   mutations: {
     setUser(state, user) {
-      console.log('Setting user:', user)
       state.user = user
+      state.isLoggedIn = !!user // Define o estado de login
     },
-    logout(state) {
-      console.log('Logging out user')
+    clearUser(state) {
       state.user = null
+      state.isLoggedIn = false // Limpa o estado de login
     }
   },
   actions: {
     signin({ commit }, user) {
-      console.log('Logging in user:', user)
       commit('setUser', user)
     },
-    logout({ commit }) {
-      commit('logout')
+    signout({ commit }) {
+      commit('clearUser')
     },
     initialize({ commit }) {
       const token = localStorage.getItem('token')
@@ -29,16 +30,8 @@ export default createStore({
       if (token && user) {
         commit('setUser', user)
       } else {
-        commit('logout')
+        commit('clearUser')
       }
-    }
-  },
-  getters: {
-    isAuthenticated(state) {
-      return !!state.user
-    },
-    getUser(state) {
-      return state.user
     }
   }
 })
