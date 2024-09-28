@@ -8,105 +8,115 @@
                 </svg>
             </div>
             <div class="styleWelcomeText">
-                <h1 class="styleTitle">Welcome to Santa Lucia's Blog</h1>
-                <p class="styleSubtitle">Enter your name, email and password to continue.</p>
+                <h1 class="styleTitle">welcome back to santalucia's blog</h1>
+                <p class="styleSubtitle">Enter your username and password to continue</p>
             </div>
             <div class="styleFormWrapper">
-                <form class="styleForm" @submit.prevent="handleSignup">
-                    <div class="styleInputContainer">
-                        <label class="styleLabelInput" for="email">E-mail</label>
-                        <input v-model="form.email" class="styleInput" type="email" placeholder="E-mail" required />
-                    </div>
-                    <!-- <div class="styleInputContainer">
-                        <label class="styleLabelInput" for="password">Password</label>
-                        <input v-model="form.password" class="styleInput" type="password" placeholder="Password"
+                <form class="styleForm" @submit.prevent="handleSignin" action="">
+                    <div v-if="step === 1" class="styleInputContainer">
+                        <label class="styleLabelInput" for="email">e-mail</label>
+                        <input class="styleInput" v-model="email" type="email" placeholder="Enter your email"
                             required />
                     </div>
-                    <div class="styleInputContainer">
+                    <div v-if="step === 2" class="styleInputContainer">
+                        <label class="styleLabelInput" for="">Code</label>
+                        <input class="styleInput" v-model="code" type="text" placeholder="Enter the code sent" required>
+                    </div>
+                    <div v-if="step === 3" class="styleInputContainer">
+                        <label class="styleLabelInput" for="password">Password</label>
+                        <input v-model="newPassword" class="styleInput" type="password" placeholder="Enter your new password"
+                            required />
+                    </div>
+                    <div v-if="step === 3" class="styleInputContainer">
                         <label class="styleLabelInput" for="confirmPassword">Confirm Password</label>
-                        <input v-model="form.confirmPassword" class="styleInput" type="password"
-                            placeholder="Confirm Password" required />
-                    </div> -->
+                        <input v-model="confirmPassword" class="styleInput" type="password"
+                            placeholder="Confirm your new password" required />
+                    </div>
                     <div class="styleSubmitButton">
-                        <button class="styleButton styleButtonGray" type="submit">
-                            <div v-if="!loading">Sign Up</div>
-                            <div v-if="loading" class="styleLoading">
-                                <font-awesome-icon :icon="['fas', 'arrows-rotate']" />
-                            </div>
-                        </button>
+                        <button v-if="step === 1" @click="sendCode" class="styleButton styleButtonGray"
+                            type="submit">Send Code</button>
+                        <button v-if="step === 2" @click="checkCode" class="styleButton styleButtonGray"
+                            type="submit">Check Code</button>
+                        <button v-if="step === 3" @click="resetPassword" class="styleButton styleButtonGray"
+                            type="submit">Reset Password</button>
                     </div>
                 </form>
                 <ErrorNotification v-if="errorMessage" :message="errorMessage" />
             </div>
-            <!-- <div class="styleSignupOption">
-                <p>Already have an account?</p>
-                <RouterLink class="styleSignupLink" to="/signin">Sign In</RouterLink>
-            </div> -->
+            <div class="styleSigninOption">
+                <p>Don't have an account?</p>
+                <RouterLink class="styleSigninLink" to="/signup">sign up</RouterLink>
+            </div>
         </div>
     </div>
 </template>
 
 <script setup>
-import { reactive, ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { ref } from 'vue';
 import axios from 'axios';
-import ErrorNotification from '@/components/popup/ErrorNotification.vue';
 
-const router = useRouter();
+const email = ref('');
+const code = ref('');
+const newPassword = ref('');
+const confirmPassword = ref('');
+const step = ref(1);
 
-// Formulário reativo
-const form = reactive({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-});
-
-// Mensagem de erro e sucesso
-const errorMessage = ref('');
-const loading = ref(false);
-
-// Função para verificar se as senhas coincidem
-const passwordsMatch = () => {
-    return form.password === form.confirmPassword;
+const sendCode = async () => {
+    try {
+        await axios.post('http://localhost:4000/api/users/sendCode', { email: email.value });
+        alert('Código enviado para seu e-mail!');
+        step.value = 2; // Muda para a etapa de verificação de código
+    } catch (error) {
+        console.error('Erro ao enviar código:', error);
+        alert('Erro ao enviar código. Verifique se o e-mail está correto.');
+    }
 };
 
-// Função para lidar com o envio do formulário
-const handleSignup = async () => {
-    loading.value = true;
-    if (!passwordsMatch()) {
-        errorMessage.value = 'Passwords do not match.';
+const checkCode = async () => {
+    try {
+        const response = await axios.post('http://localhost:4000/api/users/checkCode', {
+            codeValue: code.value,
+        });
+        if (response.data.message === 'Code is valid.') {
+            alert('Código verificado com sucesso!');
+            step.value = 3; // Muda para a etapa de redefinição de senha
+        } else {
+            alert('Código inválido. Tente novamente.');
+        }
+    } catch (error) {
+        console.error('Erro ao verificar código:', error);
+        alert('Código inválido. Tente novamente.');
+    }
+};
+
+const resetPassword = async () => {
+    if (newPassword.value !== confirmPassword.value) {
+        alert('As senhas não coincidem!');
         return;
     }
 
     try {
-        // Requisição de signup para o backend
-        const response = await axios.post('http://localhost:4000/api/users/signup', {
-            name: form.name,
-            email: form.email,
-            password: form.password,
+        await axios.post('http://localhost:4000/api/users/resetPassword', {
+            email: email.value,
+            password: newPassword.value,
         });
-
-        // Caso o registro seja bem-sucedido, redireciona para a página de login
-        if (response.status === 201) {
-            setTimeout(() => {
-                router.push('/');  // Redireciona após 2 segundos
-            }, 2000);
-        }
+        alert('Senha redefinida com sucesso!');
+        // Redirecionar ou resetar os valores do formulário
+        email.value = '';
+        code.value = '';
+        newPassword.value = '';
+        confirmPassword.value = '';
+        step.value = 1; // Reinicia para a primeira etapa
     } catch (error) {
-        console.error('Erro no cadastro:', error);
-        if (error.response && error.response.data) {
-            errorMessage.value = error.response.data.error || 'Signup failed.';
-        } else {
-            errorMessage.value = 'Signup failed.';
-        }
+        console.error('Erro ao redefinir senha:', error);
+        alert('Erro ao redefinir a senha. Tente novamente.');
     }
 };
 </script>
 
 <style scoped>
 .styleContainer {
-    @apply flex justify-center items-center h-screen md:p-4 bg-gray-200 ;
+    @apply flex justify-center items-center h-screen md:p-4 bg-gray-200;
 }
 
 .styleContentWrapper {
@@ -133,24 +143,31 @@ const handleSignup = async () => {
     @apply w-full;
 }
 
+.styleSigninOptions {
+    @apply flex justify-between items-center w-full;
+}
+
+.styleForgotPassword {
+    @apply flex justify-end items-center w-full font-semibold capitalize text-blue-600;
+}
+
 .styleSubmitButton {
     @apply w-full;
 }
 
-.styleSignupWith {
+.styleSigninWith {
     @apply text-gray-500 text-sm;
 }
 
-.styleSocialSignup {
+.styleSocialSignin {
     @apply flex justify-center gap-4;
 }
 
-.styleSignupOption {
+.styleSigninOption {
     @apply flex justify-center items-center gap-2 text-gray-500;
 }
 
-.styleSignupLink {
+.styleSigninLink {
     @apply text-blue-600 font-medium;
 }
-
 </style>

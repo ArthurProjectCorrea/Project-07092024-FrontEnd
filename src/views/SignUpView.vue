@@ -19,7 +19,7 @@
                     </div>
                     <div class="styleInputContainer">
                         <label class="styleLabelInput" for="email">E-mail</label>
-                        <input v-model="form.email" class="styleInput" type="email" placeholder="E-mail" required />
+                        <input v-model="form.email" class="styleInput" type="email" placeholder="Enter your email" required />
                     </div>
                     <div class="styleInputContainer">
                         <label class="styleLabelInput" for="password">Password</label>

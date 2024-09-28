@@ -15,7 +15,7 @@
                 <form class="styleForm" @submit.prevent="handleSignin" action="">
                     <div class="styleInputContainer">
                         <label class="styleLabelInput" for="email">e-mail</label>
-                        <input class="styleInput" v-model="email" type="email" placeholder="E-mail" required />
+                        <input class="styleInput" v-model="email" type="email" placeholder="Enter your email" required />
                     </div>
                     <div class="styleInputContainer">
                         <label class="styleLabelInput" for="">password</label>
