@@ -9,10 +9,10 @@
             <h2 class="style01-01">do Santalucia</h2>
         </div>
         <div class="styleNavigation">
-            <RouterLink to="/" active-class="active">Início</RouterLink>
-            <RouterLink to="/categories" active-class="active">Categorias</RouterLink>
-            <RouterLink to="/on" active-class="active">Sobre</RouterLink>
-            <RouterLink to="/contact" active-class="active">Contato</RouterLink>
+            <RouterLink class="style-00" to="/" active-class="active">Início</RouterLink>
+            <RouterLink class="style-00" to="/categories" active-class="active">Categorias</RouterLink>
+            <RouterLink class="style-00" to="/on" active-class="active">Sobre</RouterLink>
+            <RouterLink class="style-00" to="/contact" active-class="active">Contato</RouterLink>
         </div>
         <div class="styleButtons">
             <div v-if="!isLoggedIn" class="styleButtons">
@@ -52,11 +52,11 @@ const logout = () => {
 
 <style scoped>
 .style00 {
-    @apply flex justify-between items-center px-6 p-2 border-b max-h-16;
+    @apply flex justify-between items-center px-6 border-b min-h-16;
 }
 
 .style01 {
-    @apply flex justify-center items-center gap-2 py-2;
+    @apply flex justify-center items-center gap-2 py-2 ;
 }
 
 .style01-01 {
@@ -64,12 +64,14 @@ const logout = () => {
 }
 
 .styleNavigation {
-    @apply flex justify-between items-center gap-8 font-semibold h-full capitalize;
+    @apply flex justify-between items-center font-semibold capitalize;
+}
+.style-00 {
+    @apply p-4 h-full flex justify-center items-center;
 }
 
 .active {
-    @apply border-b-4 border-emerald-600 h-full flex justify-center items-center;
-    @apply dark:border-emerald-400;
+    @apply border-b-4 border-emerald-600  ;
 }
 
 .styleButtons {
