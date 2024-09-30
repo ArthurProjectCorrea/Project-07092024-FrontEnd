@@ -8,15 +8,15 @@
                 </svg>
             </div>
             <div class="styleWelcomeText">
-                <h1 class="styleTitle">welcome back to santalucia's blog</h1>
-                <p class="styleSubtitle">Enter your username and password to continue</p>
+                <h1 class="styleTitle">Forgot your password?</h1>
+                <p class="styleSubtitle">Confirm the email to be able to reset the password.</p>
             </div>
             <div class="styleFormWrapper">
-                <form class="styleForm" @submit.prevent="handleSignin" action="">
-                    <div v-if="step === 1" class="styleInputContainer">
+                <form class="styleForm" @submit.prevent>
+                    <div class="styleInputContainer">
                         <label class="styleLabelInput" for="email">e-mail</label>
-                        <input class="styleInput" v-model="email" type="email" placeholder="Enter your email"
-                            required />
+                        <input :disabled="step === 2 || step === 3" class="styleInput" v-model="email" type="email"
+                            placeholder="Enter your email" required />
                     </div>
                     <div v-if="step === 2" class="styleInputContainer">
                         <label class="styleLabelInput" for="">Code</label>
@@ -24,8 +24,8 @@
                     </div>
                     <div v-if="step === 3" class="styleInputContainer">
                         <label class="styleLabelInput" for="password">Password</label>
-                        <input v-model="newPassword" class="styleInput" type="password" placeholder="Enter your new password"
-                            required />
+                        <input v-model="newPassword" class="styleInput" type="password"
+                            placeholder="Enter your new password" required />
                     </div>
                     <div v-if="step === 3" class="styleInputContainer">
                         <label class="styleLabelInput" for="confirmPassword">Confirm Password</label>
@@ -33,19 +33,34 @@
                             placeholder="Confirm your new password" required />
                     </div>
                     <div class="styleSubmitButton">
-                        <button v-if="step === 1" @click="sendCode" class="styleButton styleButtonGray"
-                            type="submit">Send Code</button>
-                        <button v-if="step === 2" @click="checkCode" class="styleButton styleButtonGray"
-                            type="submit">Check Code</button>
+                        <button v-if="step === 1" @click="sendCode" class="styleButton styleButtonGray" type="submit">
+                            <div v-if="!loading">Send Code</div>
+                            <div v-if="loading" class="styleLoading">
+                                <font-awesome-icon :icon="['fas', 'arrows-rotate']" />
+                            </div>
+                        </button>
+                        <button v-if="step === 2" @click="checkCode" class="styleButton styleButtonGray" type="submit">
+                            <div v-if="!loading">Check Code</div>
+
+                            <div v-if="loading" class="styleLoading">
+                                <font-awesome-icon :icon="['fas', 'arrows-rotate']" />
+                            </div>
+                        </button>
                         <button v-if="step === 3" @click="resetPassword" class="styleButton styleButtonGray"
-                            type="submit">Reset Password</button>
+                            type="submit">
+                            <div v-if="!loading">Reset Password</div>
+
+                            <div v-if="loading" class="styleLoading">
+                                <font-awesome-icon :icon="['fas', 'arrows-rotate']" />
+                            </div>
+                        </button>
                     </div>
                 </form>
-                <ErrorNotification v-if="errorMessage" :message="errorMessage" />
+                <NotificationCustom v-if="errorMessage" :message="errorMessage" :type="messageType" />
             </div>
-            <div class="styleSigninOption">
-                <p>Don't have an account?</p>
-                <RouterLink class="styleSigninLink" to="/signup">sign up</RouterLink>
+            <div class="styleForgotPasswordOption">
+                <p>Remembered the password?</p>
+                <RouterLink class="styleForgotPasswordLink" to="/signin">sign ip</RouterLink>
             </div>
         </div>
     </div>
@@ -54,44 +69,71 @@
 <script setup>
 import { ref } from 'vue';
 import axios from 'axios';
+import { useRouter } from 'vue-router';
+import NotificationCustom from '@/components/popup/NotificationCustom.vue';
+
 
 const email = ref('');
 const code = ref('');
 const newPassword = ref('');
 const confirmPassword = ref('');
 const step = ref(1);
+const errorMessage = ref('');
+const messageType = ref('success');
+const router = useRouter();
+const loading = ref(false);
+
 
 const sendCode = async () => {
+    loading.value = true;
+    errorMessage.value = '';
     try {
         await axios.post('http://localhost:4000/api/users/sendCode', { email: email.value });
-        alert('Código enviado para seu e-mail!');
+        errorMessage.value = 'Código enviado para seu e-mail!';
+        messageType.value = 'success';
         step.value = 2; // Muda para a etapa de verificação de código
+        loading.value = false;
     } catch (error) {
         console.error('Erro ao enviar código:', error);
-        alert('Erro ao enviar código. Verifique se o e-mail está correto.');
+        errorMessage.value = 'Erro ao enviar código. Verifique se o e-mail está correto.';
+        messageType.value = 'warning';
+        loading.value = false;
     }
 };
 
 const checkCode = async () => {
+    loading.value = true;
+    errorMessage.value = '';
     try {
         const response = await axios.post('http://localhost:4000/api/users/checkCode', {
             codeValue: code.value,
         });
         if (response.data.message === 'Code is valid.') {
-            alert('Código verificado com sucesso!');
+            errorMessage.value = 'Código verificado com sucesso!';
+            messageType.value = 'success';
             step.value = 3; // Muda para a etapa de redefinição de senha
+            loading.value = false;
+
         } else {
-            alert('Código inválido. Tente novamente.');
+            loading.value = false;
+            errorMessage.value = 'Código inválido. Tente novamente.';
+            messageType.value = 'warning';
         }
     } catch (error) {
+        loading.value = false;
         console.error('Erro ao verificar código:', error);
-        alert('Código inválido. Tente novamente.');
+        errorMessage.value = 'Erro ao verificar código';
+        messageType.value = 'error';
+
     }
 };
 
 const resetPassword = async () => {
+    loading.value = true;
+    errorMessage.value = '';
     if (newPassword.value !== confirmPassword.value) {
-        alert('As senhas não coincidem!');
+        errorMessage.value = 'As senhas não coincidem!';
+        messageType.value = 'warning';
         return;
     }
 
@@ -100,16 +142,15 @@ const resetPassword = async () => {
             email: email.value,
             password: newPassword.value,
         });
-        alert('Senha redefinida com sucesso!');
-        // Redirecionar ou resetar os valores do formulário
-        email.value = '';
-        code.value = '';
-        newPassword.value = '';
-        confirmPassword.value = '';
-        step.value = 1; // Reinicia para a primeira etapa
+        errorMessage.value = 'Senha redefinida com sucesso!';
+        messageType.value = 'success';
+        router.push('/signin'); // Redirecionando após o login
     } catch (error) {
+        loading.value = false;
         console.error('Erro ao redefinir senha:', error);
-        alert('Erro ao redefinir a senha. Tente novamente.');
+        errorMessage.value = 'Erro ao redefinir a senha. Tente novamente.';
+        messageType.value = 'error';
+
     }
 };
 </script>
@@ -120,7 +161,7 @@ const resetPassword = async () => {
 }
 
 .styleContentWrapper {
-    @apply flex flex-col justify-normal items-center h-full w-full max-w-md bg-white rounded-lg shadow-lg gap-2 p-6 md:max-w-lg lg:max-w-xl;
+    @apply flex flex-col justify-normal items-center  w-full max-w-md bg-white rounded-lg shadow-lg gap-2 p-6 md:max-w-lg lg:max-w-xl;
 }
 
 .styleLogoContainer {
@@ -143,31 +184,16 @@ const resetPassword = async () => {
     @apply w-full;
 }
 
-.styleSigninOptions {
-    @apply flex justify-between items-center w-full;
-}
-
-.styleForgotPassword {
-    @apply flex justify-end items-center w-full font-semibold capitalize text-blue-600;
-}
 
 .styleSubmitButton {
     @apply w-full;
 }
 
-.styleSigninWith {
-    @apply text-gray-500 text-sm;
-}
-
-.styleSocialSignin {
-    @apply flex justify-center gap-4;
-}
-
-.styleSigninOption {
+.styleForgotPasswordOption {
     @apply flex justify-center items-center gap-2 text-gray-500;
 }
 
-.styleSigninLink {
-    @apply text-blue-600 font-medium;
+.styleForgotPasswordLink {
+    @apply text-blue-600 font-medium capitalize;
 }
 </style>

@@ -15,7 +15,7 @@
                 <form class="styleForm" @submit.prevent="handleSignup">
                     <div class="styleInputContainer">
                         <label class="styleLabelInput" for="name">Name</label>
-                        <input v-model="form.name" class="styleInput" placeholder="Name" required />
+                        <input v-model="form.name" class="styleInput" placeholder="Enter your name" required />
                     </div>
                     <div class="styleInputContainer">
                         <label class="styleLabelInput" for="email">E-mail</label>
@@ -23,13 +23,13 @@
                     </div>
                     <div class="styleInputContainer">
                         <label class="styleLabelInput" for="password">Password</label>
-                        <input v-model="form.password" class="styleInput" type="password" placeholder="Password"
+                        <input v-model="form.password" class="styleInput" type="password" placeholder="Enter your new password"
                             required />
                     </div>
                     <div class="styleInputContainer">
                         <label class="styleLabelInput" for="confirmPassword">Confirm Password</label>
                         <input v-model="form.confirmPassword" class="styleInput" type="password"
-                            placeholder="Confirm Password" required />
+                            placeholder="Confirm your new password" required />
                     </div>
                     <div class="styleSubmitButton">
                         <button class="styleButton styleButtonGray" type="submit">
@@ -40,7 +40,7 @@
                         </button>
                     </div>
                 </form>
-                <ErrorNotification v-if="errorMessage" :message="errorMessage" />
+                <NotificationCustom v-if="errorMessage" :message="errorMessage" :type="messageType" />
             </div>
             <div class="styleSignupOption">
                 <p>Already have an account?</p>
@@ -54,7 +54,7 @@
 import { reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
-import ErrorNotification from '@/components/popup/ErrorNotification.vue';
+import NotificationCustom from '@/components/popup/NotificationCustom.vue';
 
 const router = useRouter();
 
@@ -78,6 +78,7 @@ const passwordsMatch = () => {
 // Função para lidar com o envio do formulário
 const handleSignup = async () => {
     loading.value = true;
+    errorMessage.value = '';
     if (!passwordsMatch()) {
         errorMessage.value = 'Passwords do not match.';
         return;
@@ -95,7 +96,7 @@ const handleSignup = async () => {
         if (response.status === 201) {
             setTimeout(() => {
                 router.push('/');  // Redireciona após 2 segundos
-            }, 2000);
+            }, 1000);
         }
     } catch (error) {
         console.error('Erro no cadastro:', error);
@@ -114,7 +115,7 @@ const handleSignup = async () => {
 }
 
 .styleContentWrapper {
-    @apply flex flex-col justify-normal items-center h-full w-full max-w-md bg-white rounded-lg shadow-lg gap-2 p-6 md:max-w-lg lg:max-w-xl;
+    @apply flex flex-col justify-normal items-center w-full max-w-md bg-white rounded-lg shadow-lg gap-2 p-6 md:max-w-lg lg:max-w-xl;
 }
 
 .styleLogoContainer {
@@ -154,7 +155,7 @@ const handleSignup = async () => {
 }
 
 .styleSignupLink {
-    @apply text-blue-600 font-medium;
+    @apply text-blue-600 font-medium capitalize;
 }
 
 </style>

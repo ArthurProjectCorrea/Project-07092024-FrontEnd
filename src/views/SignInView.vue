@@ -19,7 +19,7 @@
                     </div>
                     <div class="styleInputContainer">
                         <label class="styleLabelInput" for="">password</label>
-                        <input class="styleInput" v-model="password" type="password" placeholder="Password" required>
+                        <input class="styleInput" v-model="password" type="password" placeholder="Enter your new password" required>
                     </div>
                     <div class="styleSigninOptions">
                         <div class="styleCheckBoxContainer">
@@ -34,10 +34,15 @@
                         <RouterLink class="styleForgotPassword" to="/forgotpassword">forgot password</RouterLink>
                     </div>
                     <div class="styleSubmitButton">
-                        <button class="styleButton styleButtonGray" type="submit">sign in</button>
+                        <button class="styleButton styleButtonGray" type="submit">
+                            <div v-if="!loading">sign in</div>
+                            <div v-if="loading" class="styleLoading">
+                                <font-awesome-icon :icon="['fas', 'arrows-rotate']" />
+                            </div>
+                        </button>
                     </div>
                 </form>
-                <ErrorNotification v-if="errorMessage" :message="errorMessage" />
+                <NotificationCustom v-if="errorMessage" :message="errorMessage" :type="messageType" />
             </div>
             <div class="styleSigninOption">
                 <p>Don't have an account?</p>
@@ -52,7 +57,7 @@ import { ref } from 'vue';
 import { useStore } from 'vuex';
 import { useRouter } from 'vue-router';
 import axios from 'axios';
-import ErrorNotification from '@/components/popup/ErrorNotification.vue';
+import NotificationCustom from '@/components/popup/NotificationCustom.vue';
 
 const store = useStore();
 const router = useRouter();
@@ -61,6 +66,8 @@ const email = ref('');
 const password = ref('');
 const rememberMe = ref(false);
 const errorMessage = ref('');
+const loading = ref(false);
+
 
 // Recupera as informações de login salvas ao carregar o componente
 const loadSavedCredentials = () => {
@@ -78,6 +85,8 @@ const loadSavedCredentials = () => {
 loadSavedCredentials();
 
 const handleSignin = async () => {
+    loading.value = true;
+
     errorMessage.value = ''; // Reseta a mensagem de erro antes do novo Signin
     try {
         const response = await axios.post('http://localhost:4000/api/users/login', {
@@ -110,7 +119,11 @@ const handleSignin = async () => {
                 email: response.data.user.email,
             });
 
-            router.push('/'); // Redirecionando após o login
+            if (response.status === 200) {
+            setTimeout(() => {
+                router.push('/');  // Redireciona após 2 segundos
+            }, 1000);
+        }
         } else {
             console.error('Formato de resposta inesperado:', response.data);
         }
@@ -128,7 +141,7 @@ const handleSignin = async () => {
 }
 
 .styleContentWrapper {
-    @apply flex flex-col justify-normal items-center h-full w-full max-w-md bg-white rounded-lg shadow-lg gap-2 p-6 md:max-w-lg lg:max-w-xl;
+    @apply flex flex-col justify-normal items-center w-full max-w-md bg-white rounded-lg shadow-lg gap-2 p-6 md:max-w-lg lg:max-w-xl;
 }
 
 .styleLogoContainer {
@@ -176,6 +189,6 @@ const handleSignin = async () => {
 }
 
 .styleSigninLink {
-    @apply text-blue-600 font-medium;
+    @apply text-blue-600 font-medium capitalize;
 }
 </style>
